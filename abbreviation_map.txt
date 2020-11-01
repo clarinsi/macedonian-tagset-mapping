@@ -1,0 +1,9 @@
+г-ѓа	NOUN
+одн	X
+ПТЦЦ	PROPN
+итн.	ADV
+г.	NOUN
+Св.	ADJ
+В.	PROPN
+ОК	ADV
+Х.	PROPN

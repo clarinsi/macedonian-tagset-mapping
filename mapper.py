@@ -1,7 +1,7 @@
 import re
 
 class MTE2UDmapper:
-    def __init__(self, mapping_file):
+    def __init__(self, mapping_file, abbreviation_file):
         self.msd_upos = {}
         self.msd_mtefeat = {}
         self.msd_udfeat = {}
@@ -9,8 +9,11 @@ class MTE2UDmapper:
             for line in mapfile:
                 parts = line.strip().split('\t')
                 self.msd_upos[parts[0]] = parts[1]
-                self.msd_mtefeat[parts[0]] = parts[2]
+                self.msd_mtefeat[parts[0]] = parts[2] 
                 self.msd_udfeat[parts[0]] = parts[3]
+
+        self.abv_upos_map = { line.split()[0] : line.split()[1] for line in open(abbreviation_file) }
+
 
     def map_word(self, surface_form, lemma, msd):
         mtefeat = self.msd_mtefeat[msd]
@@ -62,7 +65,11 @@ class MTE2UDmapper:
             if re.search('[0-9]+', surface_form):
               udfeat = 'NumType=Mult'
             else:
-              udfeat = '_'           
+              udfeat = '_'
+
+        if msd == 'Y':
+            upos = self.abv_upos_map[lemma]
+
         return mtefeat, upos, udfeat
 
     def map_file(self, infilename, outfilename):
@@ -84,7 +91,8 @@ if __name__ == '__main__':
     parser.add_argument('mapping', help='Path to the mapping file')
     parser.add_argument('input', help='Path to the input file in conllu format')
     parser.add_argument('output', help='Path to an output file')
+    parser.add_argument('abbreviation', help='Path to an abbreviations file')
     args = parser.parse_args()
 
-    mapper = MTE2UDmapper(args.mapping)
+    mapper = MTE2UDmapper(args.mapping, args.abbreviation)
     mapper.map_file(args.input, args.output)
