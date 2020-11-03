@@ -14,42 +14,35 @@ class MTE2UDmapper:
 
         self.abv_upos_map = { line.split()[0] : line.split()[1] for line in open(abbreviation_file) }
 
-
     def map_word(self, surface_form, lemma, msd):
         mtefeat = self.msd_mtefeat[msd]
         upos = self.msd_upos[msd]
         udfeat = self.msd_udfeat[msd]
 
-        if msd.startswith('Pi') and lemma in ('чиј', 'нечиј','ничиј', 'сечиј'):
-            udfeat = udfeat[0:udfeat.rfind('|')] + '|Poss=Yes|PronType=Int,Rel'
-
         if msd.startswith('P'):
+            if lemma in ('чиј','нечиј','ничиј', 'сечиј'):
+              udfeat = udfeat + '|Poss=Yes'
             if lemma in ('секој', 'никој', 'некој', 'сешто', 'ништо', 'нешто'):
                 upos = 'PRON'
-            if lemma in ('сиот', 'ничиј', 'нечиј', 'сечиј'): #check what happens with adjectives ? poss pron in MK are poss adj: секаков, некаков, никаков
-                upos = 'DET' #check twice!!!
-            if lemma in ('сиот', 'сѐ', 'секој', 'сешто', 'сечиј'): #check секаков 
-                if 'PronType' in udfeat:
-                    udfeat = udfeat[0:udfeat.find('PronType')] + 'PronType=Tot'
-                else:
-                    udfeat += 'PronType=Tot'
-            elif lemma in ('некој', 'нешто', 'неколку', 'нечиј', 'некаков'):  #check некаков
-                if 'PronType' in udfeat:
-                    udfeat = udfeat[0:udfeat.find('PronType')] + 'PronType=Ind'
-                else:
-                    udfeat += '|PronType=Ind'
+            if lemma in ('сиот', 'ничиј', 'нечиј', 'сечиј'):
+                upos = 'DET' 
+            if lemma in ('сиот', 'сѐ', 'секој', 'сечиј'): 
+              if 'PronType' in udfeat:
+                udfeat = udfeat[0:udfeat.find('PronType')] + 'PronType=Tot' + udfeat[udfeat.find('PronType')+ len('PronType=Tot'):]
+              else:
+                udfeat += '|PronType=Tot'
 
         if msd.startswith('Rg'):
           if lemma in ('олку', 'вака', 'ваму','овде' 'онолку', 'онака', 'онаму','онде', 'толку', 'така', 'тогаш', 'таму', 'тука'):
-            udfeat += '|PronType=Dem'
-          elif lemma in ('колку', 'како', 'кога', 'зошто', 'каде'):
-            udfeat += '|PronType=Int,Rel'
+            udfeat = 'PronType=Dem'
+          elif lemma in ('колку', 'како', 'кога', 'што', 'каде'):
+            udfeat = 'PronType=Int,Rel'
           elif lemma in ('неколку', 'некако', 'некогаш', 'понекогаш', 'некаде'):
-            udfeat += '|PronType=Ind'
+            udfeat = 'PronType=Ind'
           elif lemma in ('сѐ', 'секако', 'секогаш', 'секаде', 'насекаде'):
-            udfeat += '|PronType=Tot'
+            udfeat = 'PronType=Tot'
           elif lemma in ('николку', 'никако', 'никогаш', 'никаде'):
-            udfeat += '|PronType=Neg'
+            udfeat = 'PronType=Neg'
 
 
         if msd.startswith('Mlc') and msd != 'Mlc':
@@ -58,7 +51,7 @@ class MTE2UDmapper:
                 numstr = 'Sing'
             else:
                 numstr = 'Plur'
-            udfeat = udfeat[0:udfeat.find('NumType')] + 'Number=' + numstr + '|NumType=Card'
+            udfeat = udfeat[0:udfeat.find('NumType')] + 'Number=' + numstr + "|" + udfeat[udfeat.find('NumType'):]
 
           if '%' in surface_form or '$' in surface_form:
             upos = 'SYM'
