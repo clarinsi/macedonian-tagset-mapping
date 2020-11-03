@@ -9,7 +9,7 @@ class MTE2UDmapper:
             for line in mapfile:
                 parts = line.strip().split('\t')
                 self.msd_upos[parts[0]] = parts[1]
-                self.msd_mtefeat[parts[0]] = parts[2] 
+                self.msd_mtefeat[parts[0]] = parts[2]
                 self.msd_udfeat[parts[0]] = parts[3]
 
         self.abv_upos_map = { line.split()[0] : line.split()[1] for line in open(abbreviation_file) }
@@ -80,7 +80,7 @@ class MTE2UDmapper:
                         parts = line.split('\t')
                         # print(parts)
                         mtefeat, upos, udfeat = self.map_word(parts[1], parts[2], parts[4])
-                        outfile.write(parts[0] + '\t' + parts[1] + '\t' + parts[2] + '\t' + upos + '\t' + parts[4] + '\t' + udfeat + '\n')
+                        outfile.write(parts[0] + '\t' + parts[1] + '\t' + parts[2] + '\t' + upos + '\t' + parts[4] + '\t' + udfeat + '\t' + '\t'.join(parts[6:])+'\n')
                     else:
                         outfile.write(line)
 
