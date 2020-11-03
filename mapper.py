@@ -80,7 +80,7 @@ class MTE2UDmapper:
                         parts = line.split('\t')
                         # print(parts)
                         mtefeat, upos, udfeat = self.map_word(parts[1], parts[2], parts[4])
-                        outfile.write(parts[0] + '\t' + parts[1] + '\t' + parts[2] + '\t' + upos + '\t' + parts[4] + '\t' + udfeat + '\t' + '\t'.join(parts[6:])+'\n')
+                        outfile.write(parts[0] + '\t' + parts[1] + '\t' + parts[2] + '\t' + upos + '\t' + parts[4] + '\t' + udfeat + '\t' + '\t'.join(parts[6:]))
                     else:
                         outfile.write(line)
 
